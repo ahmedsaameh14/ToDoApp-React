@@ -1,14 +1,17 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { TaskList } from "./types/Task";
 
 function App() {
-  const [tasks, setTasks] = useState<TaskList>([
-    { id: 1, text: "Learning React Hooks", completed: false },
-    { id: 2, text: "Mastering Tailwind CSS", completed: false },
-    { id: 3, text: "Building a Portfolio", completed: false },
-  ]);
+  const [tasks, setTasks] = useState<TaskList>(() => {
+    const savedTasks = localStorage.getItem("my-tasks");
+    return savedTasks ? JSON.parse(savedTasks) : [];
+  });
 
   const remainingTasks = useMemo(() => tasks.filter((task) => !task.completed).length, [tasks]);
+
+  useEffect(() => {
+    localStorage.setItem("my-tasks", JSON.stringify(tasks));
+  }, [tasks]);
 
   // --- Handlers ---
 
